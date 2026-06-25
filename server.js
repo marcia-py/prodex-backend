@@ -27,7 +27,9 @@ app.post('/tryon', async (req, res) => {
             }
         );
 
-        const result = await response.json();
+        const text = await response.text();
+console.log(text);
+return res.status(500).send(text);
 
         // The output image is usually here:
         const image = result.data[0];
