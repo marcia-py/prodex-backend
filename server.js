@@ -27,15 +27,15 @@ app.post('/tryon', async (req, res) => {
             }
         );
 
+        console.log("HF Status:", response.status);
+        console.log("HF Content-Type:", response.headers.get("content-type"));
+
         const text = await response.text();
-console.log(text);
-return res.status(500).send(text);
 
-        // The output image is usually here:
-        const image = result.data[0];
+        console.log("HF Response:");
+        console.log(text);
 
-        // Return base64 or URL directly
-        res.json({ image });
+        res.send(text);
 
     } catch (error) {
         console.error(error);
