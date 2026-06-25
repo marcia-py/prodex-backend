@@ -34,7 +34,7 @@ app.post('/tryon', async (req, res) => {
             garment_des: "shirt",
             is_checked: true,
             is_checked_crop: false,
-            denoise_steps: 30,
+            denoise_steps: 40,
             seed: 42
         });
 
