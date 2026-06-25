@@ -11,22 +11,33 @@ app.use(express.json({ limit: '10mb' }));
 
 app.post('/tryon', async (req, res) => {
     try {
-        const response = await fetch('https://api-inference.huggingface.co/models/yisol/IDM-VTON', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.HF_TOKEN}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(req.body)
-        });
+        const response = await fetch(
+            'https://yisol-idm-vton.hf.space/run/predict',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: [
+                        req.body.inputs.person_image,
+                        req.body.inputs.cloth_image
+                    ]
+                })
+            }
+        );
 
-        const buffer = await response.arrayBuffer();
-        res.set('Content-Type', 'image/png');
-        res.send(Buffer.from(buffer));
+        const result = await response.json();
+
+        // The output image is usually here:
+        const image = result.data[0];
+
+        // Return base64 or URL directly
+        res.json({ image });
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error processing the image.");
+        res.status(500).send(error.message);
     }
 });
 
