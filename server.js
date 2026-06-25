@@ -41,7 +41,7 @@ app.post('/tryon', async (req, res) => {
         console.log("SUCCESS:", result);
 
         res.json({
-            image: result.data[0]
+            image: result.data[0].url
         });
 
     } catch (error) {
