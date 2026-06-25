@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { Client } from "@gradio/client";
+import axios from "axios";
 
 const app = express();
 
@@ -11,17 +12,25 @@ app.use(express.json({ limit: '10mb' }));
 
 app.post('/tryon', async (req, res) => {
     try {
+
         console.log("Starting try-on...");
 
         const client = await Client.connect("yisol/IDM-VTON");
 
+        const personBase64 = req.body.inputs.person_image;
+        const clothBase64 = req.body.inputs.cloth_image;
+
+        // Convert base64 → Buffer
+        const personBuffer = Buffer.from(personBase64, "base64");
+        const clothBuffer = Buffer.from(clothBase64, "base64");
+
         const result = await client.predict("/tryon", {
             dict: {
-                background: req.body.inputs.person_image,
+                background: personBuffer,
                 layers: [],
                 composite: null
             },
-            garm_img: req.body.inputs.cloth_image,
+            garm_img: clothBuffer,
             garment_des: "shirt",
             is_checked: true,
             is_checked_crop: false,
@@ -29,13 +38,10 @@ app.post('/tryon', async (req, res) => {
             seed: 42
         });
 
-        console.log("Result received:", result);
-
-        // IMPORTANT: Space returns array of outputs
-        const outputImage = result.data[0];
+        console.log("SUCCESS:", result);
 
         res.json({
-            image: outputImage
+            image: result.data[0]
         });
 
     } catch (error) {
