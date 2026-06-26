@@ -23,6 +23,33 @@ app.post('/tryon', async (req, res) => {
         // Convert base64 → Buffer
         const personBuffer = Buffer.from(personBase64, "base64");
         const clothBuffer = Buffer.from(clothBase64, "base64");
+        const type = req.body.inputs.type || "auto";
+
+        console.log("Clothing type received:", type);
+
+        let selectedModel = "IDM-VTON";
+
+        if (type === "dress") {
+            selectedModel = "IDM-VTON (dress mode)";
+        }
+        
+        if (type === "pants") {
+            selectedModel = "IDM-VTON (pants mode)";
+        }
+        
+        if (type === "skirt") {
+            selectedModel = "IDM-VTON (skirt mode)";
+        }
+        
+        if (type === "top") {
+            selectedModel = "IDM-VTON (top mode)";
+        }
+        
+        if (type === "auto") {
+            selectedModel = "IDM-VTON (auto mode)";
+        }
+        
+        console.log("Selected model:", selectedModel);
 
         const result = await client.predict("/tryon", {
             dict: {
