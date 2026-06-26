@@ -1,13 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import { Client } from "@gradio/client";
-import axios from "axios";
 
 const app = express();
 
 app.use(cors({
   origin: 'https://marcia-py.github.io'
 }));
+
 app.use(express.json({ limit: '10mb' }));
 
 app.post('/tryon', async (req, res) => {
@@ -20,36 +20,8 @@ app.post('/tryon', async (req, res) => {
         const personBase64 = req.body.inputs.person_image;
         const clothBase64 = req.body.inputs.cloth_image;
 
-        // Convert base64 → Buffer
         const personBuffer = Buffer.from(personBase64, "base64");
         const clothBuffer = Buffer.from(clothBase64, "base64");
-        const type = req.body.inputs.type || "auto";
-
-        console.log("Clothing type received:", type);
-
-        let selectedModel = "IDM-VTON";
-
-        if (type === "dress") {
-            selectedModel = "IDM-VTON (dress mode)";
-        }
-        
-        if (type === "pants") {
-            selectedModel = "IDM-VTON (pants mode)";
-        }
-        
-        if (type === "skirt") {
-            selectedModel = "IDM-VTON (skirt mode)";
-        }
-        
-        if (type === "top") {
-            selectedModel = "IDM-VTON (top mode)";
-        }
-        
-        if (type === "auto") {
-            selectedModel = "IDM-VTON (auto mode)";
-        }
-        
-        console.log("Selected model:", selectedModel);
 
         const result = await client.predict("/tryon", {
             dict: {
@@ -84,5 +56,5 @@ app.listen(PORT, () => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Backend alive');
+    res.send("Backend alive");
 });
